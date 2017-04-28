@@ -40,7 +40,7 @@ def run_game():
 # ** -- Main game loop. Run forever or until break -- **
 	while 1:
 		frame += 1
-		if (frame % 50 == 0):
+		if (frame % 100 == 0):
 			enemies.add(Enemy(screen))
 # ** -- Fill screen with background color -- **
 		screen.fill(background_color)
@@ -61,7 +61,7 @@ def run_game():
 		# update and draw the bullets
 		for bullet in bullets:
 			bullet.draw_bullet()
-		bullets.update()
+			bullet.update()
 	
 		hero_died = groupcollide(the_player_group,enemies,True,False)
 		bullet_death = groupcollide(bullets,enemies,True,True)
