@@ -2,9 +2,10 @@
 # ** -- pygame is not part of core (like math or random is) -- **
 import pygame
 # ** -- Get sys module so we can exit game -- **
-from random import randint
 from Player import Player
 from game_functions import *
+from Enemy import Enemy
+from pygame.sprite import Group, groupcollide
 
 # ** -- CORE GAME LOOP -- **
 Red = randint(0, 255)
@@ -26,18 +27,45 @@ def run_game():
 	# **  -- set a caption on terminal window -- **
 	pygame.display.set_caption("A Heroic 3rd Person Shooter")
 
-	the_player = Player(screen)
+	the_player = Player(screen, './images/Hero.png', 100, 100)
+	bad_dude = Enemy(screen)
+	the_player_group = Group()
+	the_player_group.add(the_player)
+	enemies = Group()
+	enemies.add(bad_dude)
+	bullets = Group()
+
+
 
 # ** -- Main game loop. Run forever or until break -- **
 	while 1:
 		frame += 1
+		if (frame % 50 == 0):
+			enemies.add(Enemy(screen))
 # ** -- Fill screen with background color -- **
 		screen.fill(background_color)
-		# snail_rave()	
+		if (frame % 3600 == 0):
+			background_color = (randint(0,255), randint(0,255), randint(0,255))	
+		# snail_rave(screen,frame,background_color)	
 		# ** -- the escape hatch (from while) -- **
-		check_events()
+		check_events(screen,the_player,bullets)
 		# clear the screen for the next time through the loop
-		the_player.draw_me()
+
+		for player in the_player_group:
+			the_player.draw_me()
+		
+		for bad_dude in enemies: 
+			bad_dude.draw_me()
+			bad_dude.update_me(the_player)
+
+		# update and draw the bullets
+		for bullet in bullets:
+			bullet.draw_bullet()
+		bullets.update()
+	
+		hero_died = groupcollide(the_player_group,enemies,True,False)
+		bullet_death = groupcollide(bullets,enemies,True,True)
+
 		pygame.display.flip()
 
 run_game()
